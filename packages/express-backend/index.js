@@ -45,10 +45,27 @@ const users = {
     addUser(userToAdd);
     res.send();
   });
-  
+
+  const deleteUser = (id) => {
+    users.users_list = users.users_list.filter( (user) => user.id !== id)
+  };
+
+  app.delete("/users/:id", (req, res) => {
+    const id = req.params.id;
+
+    const result = findUserById(id);
+    if (result === undefined) {
+        res.status(404).send("User not found")
+    }
+    else {
+        deleteUser(id);
+        res.send("User " + id + " deleted");
+    }
+  });
+
 
   const findUserById = (id) =>
-    users["users_list"].find((user) => user["id"] === id);
+    users.users_list.find((user) => user.id === id);
   
   app.get("/users/:id", (req, res) => {
     const id = req.params["id"]; //or req.params.id
