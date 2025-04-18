@@ -95,7 +95,7 @@ const users = {
   });
 
 app.get("/", (req, res) => {
-  res.send("Hello Wprld!");
+  res.send("Hello World!");
 });
 
 app.listen(port, () => {
