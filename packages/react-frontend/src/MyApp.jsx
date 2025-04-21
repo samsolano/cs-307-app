@@ -7,22 +7,63 @@ function MyApp() {
     const [characters, setCharacters] = useState([]);
 
       function removeOneCharacter(index) {
-        const updatedList = characters.filter((character, i) => {
 
-            if (i == index) {
-                return false;
+        const charID = characters[index].id;
+        console.log(characters);
+        console.log(charID);
+
+
+        fetch(`http://localhost:8000/users/${charID}`, {
+          method: "DELETE",
+        })
+          .then(response => {
+            console.log("DELETE status:", response.status);
+            if (!response.ok) {
+              throw new Error(`Delete failed: ${response.status}`);
             }
-            return true;
-        });
-        setCharacters(updatedList);
-      }
+            // Only update state once the server confirms deletion:
+            setCharacters(chars => chars.filter(c => c.id !== charID));
+          })
+          .catch(err => {
+            console.error("Failed to delete user:", err);
+          });
+    }
+
 
       function updateList(person) {
-        setCharacters([...characters, person]);
+        postUser(person)
+        .then(response => {
+          console.log("POST status:", response.status);
+          
+          if (response.status !== 201) {
+            throw new Error(`Server responded ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
+          setCharacters([...characters, data]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       }
 
       function fetchUsers() {
         const promise = fetch("http://localhost:8000/users");
+        return promise;
+      }
+
+
+      function postUser(person) {
+        const promise = fetch("Http://localhost:8000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(person)
+        });
+      
         return promise;
       }
 
