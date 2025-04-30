@@ -6,12 +6,9 @@ function MyApp() {
 
     const [characters, setCharacters] = useState([]);
 
+
       function removeOneCharacter(index) {
-
-        const charID = characters[index].id;
-        console.log(characters);
-        console.log(charID);
-
+        const charID = characters[index]._id;
 
         fetch(`http://localhost:8000/users/${charID}`, {
           method: "DELETE",
@@ -22,7 +19,7 @@ function MyApp() {
               throw new Error(`Delete failed: ${response.status}`);
             }
             // Only update state once the server confirms deletion:
-            setCharacters(chars => chars.filter(c => c.id !== charID));
+            setCharacters(chars => chars.filter(c => c._id !== charID));
           })
           .catch(err => {
             console.error("Failed to delete user:", err);
@@ -70,7 +67,7 @@ function MyApp() {
       useEffect(() => {
         fetchUsers()
           .then((res) => res.json())
-          .then((json) => setCharacters(json["users_list"]))
+          .then((json) => setCharacters(json))
           .catch((error) => {
             console.log(error);
           });
